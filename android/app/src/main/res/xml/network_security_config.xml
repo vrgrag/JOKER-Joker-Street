@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Network security config — Joker Street (gray flow).
+
+    Partner push / attribution links routinely bounce through plain HTTP
+    trackers (e.g. http://afsub.com/push/, http://<partner>.click/…) on
+    the way to the final HTTPS landing page. Android 9+ blocks cleartext
+    by default → the WebView surfaces `net::ERR_CLEARTEXT_NOT_PERMITTED`
+    and the entire push tap dies on the redirect hop.
+
+    We keep TLS as the default trust anchor but permit cleartext at the
+    base-config level so the WebView can follow http:// redirects. The
+    final destination is still HTTPS and its certificate is validated
+    normally.
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system"/>
+        </trust-anchors>
+    </base-config>
+</network-security-config>

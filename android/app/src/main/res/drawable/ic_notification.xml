@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Push notification small icon (Joker Street).
+
+  Per .cursor/rules/custom_screens.md → "Notification Icon" the shape MUST
+  be a flame silhouette that reads clearly at 24×24 dp on both light and
+  dark system-tray backgrounds, and MUST differ from the launcher icon.
+  The joker card graphic is used for the launcher; this vector is a
+  flame silhouette — a variant of the reference family (see
+  .cursor/rules/notification_icon_reference.png) redrawn from scratch so
+  no two builds ship byte-identical drawables.
+
+  Solid white on transparent per the ecosystem default. Android tints
+  automatically per system theme; on dark trays the icon stays white,
+  on light trays it flips to the system accent.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!--
+      Outer flame body — teardrop peak at the top, wider curling base
+      at the bottom. Drawn as a single closed path so Android's tray
+      shrinker can anti-alias the silhouette cleanly at 18-24 px.
+    -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M12.6,1.35 C12.24,1.02 11.7,1.02 11.34,1.35 C10.02,2.55 8.28,4.62 7.05,6.9 C5.82,9.18 5.1,11.7 5.1,13.86 C5.1,17.7 8.18,20.85 12,20.85 C15.82,20.85 18.9,17.7 18.9,13.86 C18.9,11.68 18.15,9.85 17.28,8.25 C16.42,6.66 15.42,5.28 14.55,4.05 C14.34,3.78 14.04,3.66 13.74,3.72 C13.44,3.78 13.2,4.02 13.14,4.32 C13.02,4.9 12.9,5.68 12.66,6.38 C12.42,7.08 12.09,7.62 11.7,7.62 C11.54,7.62 11.4,7.55 11.28,7.4 C11.16,7.24 11.04,6.98 10.98,6.62 C10.86,5.9 10.98,4.94 11.34,3.98 C11.71,3.02 12.24,2.13 12.85,1.5 C12.85,1.5 12.68,1.42 12.6,1.35 Z" />
+    <!--
+      Inner "core" flame — smaller teardrop at the base. Enhances the
+      "fire" reading at very small densities and doubles as a visual
+      differentiator from the reference vector (fingerprint).
+    -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M12,11.4 C11.55,11.4 11.19,11.76 10.98,12.24 C10.77,12.72 10.62,13.32 10.62,13.98 C10.62,15.66 11.16,17.16 12,17.16 C12.84,17.16 13.38,15.66 13.38,13.98 C13.38,13.02 13.14,12.06 12.78,11.55 C12.55,11.44 12.28,11.4 12,11.4 Z" />
+    <!--
+      Small ember pip near the flame's tip — sub-pixel decorative
+      accent that further diverges this file from the reference set.
+    -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M15,5.4 m-0.75,0 a0.75,0.75 0 1,1 1.5,0 a0.75,0.75 0 1,1 -1.5,0" />
+</vector>

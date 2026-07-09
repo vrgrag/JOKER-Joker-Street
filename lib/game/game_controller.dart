@@ -31,6 +31,21 @@ class GameController extends ChangeNotifier {
     _bestScoreCache = prefs.getInt(_kBestScoreKey) ?? 0;
   }
 
+  /// Instance-level refresh — reads the persisted best score into this
+  /// controller and notifies listeners. Used by the RouteBoss so the
+  /// menu screen paints the correct value on first frame (without this
+  /// the controller was constructed before disk I/O completed and would
+  /// briefly show 0).
+  Future<void> refreshBestScore() async {
+    await loadBestScore();
+    if (bestScore != _bestScoreCache) {
+      bestScore = _bestScoreCache;
+      notifyListeners();
+    } else {
+      bestScore = _bestScoreCache;
+    }
+  }
+
   static Future<void> _saveBestScore(int value) async {
     _bestScoreCache = value;
     final prefs = await SharedPreferences.getInstance();

@@ -27,7 +27,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
     super.initState();
     _controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setBackgroundColor(Palette.nightPurple)
+      ..setBackgroundColor(Colors.white)
       ..setNavigationDelegate(
         NavigationDelegate(
           onPageStarted: (_) {
@@ -64,7 +64,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Palette.nightPurple,
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Palette.deepPurple,
         foregroundColor: Palette.cream,

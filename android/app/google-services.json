@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "734686002392",
+    "project_id": "joker-street",
+    "storage_bucket": "joker-street.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:734686002392:android:6a62a367a5d0ba65ce2bad",
+        "android_client_info": {
+          "package_name": "com.joker.jokerstreet"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyADqahPBgJf6fF2JXRbpyhpfUlWqYoD6v8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
