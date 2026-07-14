@@ -14,6 +14,7 @@ import '../widgets/floating_text_popup.dart';
 import '../widgets/game_over_overlay.dart';
 import '../widgets/hud_bar.dart';
 import '../widgets/tile_widget.dart';
+import '../wire/insight.dart';
 
 const List<double> _rowY = [0.10, 0.42, 0.74];
 const List<double> _laneX = [0.27, 0.73];
@@ -30,17 +31,28 @@ class _GameScreenState extends State<GameScreen>
   late final Ticker _ticker;
   Duration? _lastElapsed;
   late final GameController _game;
+  bool _gameOverTracked = false;
 
   @override
   void initState() {
     super.initState();
+    Insight.screen('game');
     SystemChrome.setPreferredOrientations(const [
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
     _game = context.read<GameController>();
+    _game.addListener(_onGameStateChange);
     _game.start();
     _ticker = createTicker(_onTick)..start();
+  }
+
+  void _onGameStateChange() {
+    if (!_gameOverTracked && _game.status == GameStatus.gameOver) {
+      _gameOverTracked = true;
+      Insight.event('game_over');
+      Insight.tag('final_score', '${_game.score}');
+    }
   }
 
   void _onTick(Duration elapsed) {
@@ -53,6 +65,7 @@ class _GameScreenState extends State<GameScreen>
 
   @override
   void dispose() {
+    _game.removeListener(_onGameStateChange);
     _ticker.dispose();
     super.dispose();
   }

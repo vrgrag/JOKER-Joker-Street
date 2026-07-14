@@ -13,6 +13,7 @@ import '../theme/palette.dart';
 import '../widgets/animated_loading_dots.dart';
 import '../wire/adspot_pipe.dart';
 import '../wire/handshake_gate.dart';
+import '../wire/insight.dart';
 import '../wire/mask_store.dart';
 import '../wire/push_relay.dart';
 import '../wire/signal_gauge.dart';
@@ -72,6 +73,7 @@ class _RouteBossState extends State<RouteBoss>
       duration: const Duration(milliseconds: 1200),
     )..repeat();
     widget.pushRelay.onTokenRotated = _repostToken;
+    Insight.screen('loading');
 
     SystemChrome.setPreferredOrientations(const <DeviceOrientation>[
       DeviceOrientation.portraitUp,
@@ -148,6 +150,7 @@ class _RouteBossState extends State<RouteBoss>
     // A pending cold-tap push link wins over everything else.
     final String? pending = await widget.store.takePendingLink();
     if (pending != null) {
+      Insight.event('route_push_link');
       _lift(1.0);
       await _settle();
       _toPortal(pending);
@@ -170,6 +173,7 @@ class _RouteBossState extends State<RouteBoss>
     if (verdict.granted && verdict.hasLink) {
       _toPortal(verdict.link!);
     } else if (cached != null) {
+      Insight.event('route_cached_link');
       _toPortal(cached);
     } else {
       _toOffline();
@@ -182,6 +186,18 @@ class _RouteBossState extends State<RouteBoss>
         await widget.adSpotPipe.assemblePortalBody(
       locale: locale,
       pushToken: widget.pushRelay.token,
+    );
+    // Identify the session as soon as af_id is known. Attribution tags are
+    // attached so the Clarity dashboard can be sliced per acquired user.
+    Insight.identify(
+      body['af_id']?.toString(),
+      tags: <String, String>{
+        'af_status': body['af_status']?.toString() ?? '',
+        'media_source': body['media_source']?.toString() ?? '',
+        'campaign': body['campaign']?.toString() ?? '',
+        'os': body['os']?.toString() ?? '',
+        'locale': body['locale']?.toString() ?? '',
+      },
     );
     return widget.handshakeGate.knock(body);
   }
@@ -202,6 +218,8 @@ class _RouteBossState extends State<RouteBoss>
   // ── Routing ──
 
   Future<void> _goNative({required double initialLift}) async {
+    Insight.tag('run_mode', 'native');
+    Insight.event('route_native');
     _lift(initialLift);
     await SystemChrome.setPreferredOrientations(const <DeviceOrientation>[
       DeviceOrientation.portraitUp,
@@ -238,6 +256,8 @@ class _RouteBossState extends State<RouteBoss>
   void _toPortal(String link) {
     if (_routed || !mounted) return;
     _routed = true;
+    Insight.tag('run_mode', 'web');
+    Insight.event('route_web');
     if (widget.store.shouldOfferInvite()) {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute<void>(
@@ -250,6 +270,16 @@ class _RouteBossState extends State<RouteBoss>
         ),
       );
     } else {
+      // Returning users skip the invite screen — classify their notif state
+      // so the `notif_permission` tag is never blank in the dashboard.
+      Insight.tag(
+        'notif_permission',
+        widget.store.isPushGranted()
+            ? 'granted'
+            : widget.store.isPushBlockedByOs()
+                ? 'os_denied'
+                : 'snoozed',
+      );
       Navigator.of(context).pushReplacement(
         MaterialPageRoute<void>(
           builder: (_) => WebScene(
@@ -266,6 +296,7 @@ class _RouteBossState extends State<RouteBoss>
   void _toOffline() {
     if (_routed || !mounted) return;
     _routed = true;
+    Insight.event('route_offline');
     Navigator.of(context).pushReplacement(
       MaterialPageRoute<void>(
         builder: (_) => NoLinkScene(

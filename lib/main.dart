@@ -1,3 +1,4 @@
+import 'package:clarity_flutter/clarity_flutter.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
@@ -10,6 +11,7 @@ import 'game/game_controller.dart';
 import 'theme/palette.dart';
 import 'wire/adspot_pipe.dart';
 import 'wire/handshake_gate.dart';
+import 'wire/insight.dart';
 import 'wire/mask_store.dart';
 import 'wire/masked_agent.dart';
 import 'wire/push_relay.dart';
@@ -82,12 +84,17 @@ Future<void> main() async {
   final HandshakeGate handshakeGate = HandshakeGate(store);
   final PushRelay pushRelay = PushRelay(store);
 
-  runApp(JokerStreetApp(
-    store: store,
-    signalGauge: signalGauge,
-    adSpotPipe: adSpotPipe,
-    handshakeGate: handshakeGate,
-    pushRelay: pushRelay,
+  // ClarityWidget must wrap the app root so replay + custom events
+  // work across every route. See .cursor/rules/clarity_analytics.mdc §1.
+  runApp(ClarityWidget(
+    clarityConfig: Insight.config,
+    app: JokerStreetApp(
+      store: store,
+      signalGauge: signalGauge,
+      adSpotPipe: adSpotPipe,
+      handshakeGate: handshakeGate,
+      pushRelay: pushRelay,
+    ),
   ));
 }
 

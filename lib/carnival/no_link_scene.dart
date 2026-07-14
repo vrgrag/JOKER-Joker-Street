@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../app_assets.dart';
 import '../theme/palette.dart';
+import '../wire/insight.dart';
 import 'neon_pill.dart';
 
 /// Shown when the device has no live connection. Uses the project's
@@ -26,8 +27,15 @@ class NoLinkScene extends StatefulWidget {
 class _NoLinkSceneState extends State<NoLinkScene> {
   bool _busy = false;
 
+  @override
+  void initState() {
+    super.initState();
+    Insight.screen('offline');
+  }
+
   Future<void> _retry() async {
     if (_busy) return;
+    Insight.event('offline_retry');
     setState(() => _busy = true);
     // Tiny grace so the pill's press animation gets to play.
     await Future<void>.delayed(const Duration(milliseconds: 320));

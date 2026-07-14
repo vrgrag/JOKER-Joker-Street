@@ -7,6 +7,7 @@ import '../app_urls.dart';
 import '../game/game_controller.dart';
 import '../theme/palette.dart';
 import '../widgets/bobbing.dart';
+import '../wire/insight.dart';
 import 'game_screen.dart';
 import 'webview_screen.dart';
 
@@ -21,6 +22,7 @@ class _MenuScreenState extends State<MenuScreen> {
   @override
   void initState() {
     super.initState();
+    Insight.screen('menu');
     SystemChrome.setPreferredOrientations(const [
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
